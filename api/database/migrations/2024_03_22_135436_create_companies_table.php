@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->primary(['recnum','codigo']);
+            $table->index(['codigo']);
         });
     }
 
