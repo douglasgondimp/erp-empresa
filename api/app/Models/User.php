@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,6 +48,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        if (!self::isAdmin()) {
+            static::addGlobalScope('client', function (Builder $builder) {
+                $builder->where('client_id', auth()->user()->client_id);
+            });
+        }
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role_id === 1;
     }
 
     public function roles(): BelongsTo
