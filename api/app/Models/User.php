@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -48,22 +49,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        if (!self::isAdmin()) {
-            static::addGlobalScope('client', function (Builder $builder) {
-                $builder->where('client_id', auth()->user()->client_id);
-            });
-        }
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->role_id === 1;
     }
 
     public function roles(): BelongsTo
