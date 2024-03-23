@@ -37,7 +37,7 @@ class CompanyController extends Controller
      */
     public function update(CompanyRequest $request, Company $company)
     {
-        return Company::find($company->id)->update($request->only(['empresa', 'sigla', 'razao_social']));
+        return $company->update($request->validated());
     }
 
     /**
@@ -45,6 +45,6 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        return Company::find($company->id)->delete();
+        return $company->delete();
     }
 }
