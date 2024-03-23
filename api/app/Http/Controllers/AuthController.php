@@ -17,17 +17,25 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('access')->plainTextToken;
 
-            return response()->json(['token' => $token]);
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+            ]);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $user = User::find(auth()->user()->id);
         $user->tokens()->delete();
 
         return response()->json(['message' => 'Logged out']);
+    }
+
+    public function checkAuth(): bool
+    {
+        return Auth::check();
     }
 }
