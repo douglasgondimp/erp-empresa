@@ -1,23 +1,61 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { useStore } from 'vuex';
+import Menu from '@/components/Menu.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+      meta: {
+        auth: false
+      }
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/clients',
+      name: 'clients',
+      components: {
+        default: () => import('../views/ClientsView.vue'),
+        menu: Menu,
+      },
+      meta: {
+        auth: true,
+      }
+    },
+    {
+      path: '/companies',
+      name: 'companies',
+      components: {
+        default: () => import('../views/CompaniesView.vue'),
+        menu: Menu,
+      },
+      meta: {
+        auth: true,
+      }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  useStore().dispatch('getToken');
+  useStore().dispatch('getUser');
+
+  const token = useStore().state.token;
+  const user = useStore().state.user;
+
+  if (token && user) {
+    if (to.path === '/login') {
+      next('/clients');
+    }
+
+    next();
+  } else if (to.meta?.auth) {
+    next('/login');
+  } else {
+    next();
+  }
 })
 
 export default router
