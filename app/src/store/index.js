@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import http from '@/services/http.js';
+import router from '@/router';
 
 export default createStore({
     state: {
@@ -23,7 +24,8 @@ export default createStore({
                 .then(response => {
                     commit('setUser', response.data.user);
                     commit('setToken', response.data.token);
-                    console.log(response.data);
+
+                    router.push('/clients');
                 })
             } catch (error) {
                 console.error(error);
@@ -38,6 +40,6 @@ export default createStore({
             if (localStorage.getItem('user')) {
                 commit('setUser', JSON.parse(localStorage.getItem('user')));
             }
-        }
+        },
     },
 })
