@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CompanyRequest extends FormRequest
+class UpdateCompanyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class CompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'codigo'       => 'required|decimal:4,0|unique:App\Models\Company,codigo',
-            'empresa'      => 'required|decimal:4,0',
+            'codigo'       => 'required|numeric|max:9999|unique:App\Models\Company,codigo,'.$this->company->codigo,
+            'empresa'      => 'required|numeric|max:9999',
             'sigla'        => 'required|string|max:40',
             'razao_social' => 'required|string|max:255', 
         ];
@@ -34,8 +34,8 @@ class CompanyRequest extends FormRequest
         return [
             'codigo.required'       => 'O campo Código é obrigatório.',
             'codigo.unique'         => 'O campo Código já existe.',
-            'codigo.decimal'        => 'O campo Código deve ser um número.',
-            'empresa.decimal'       => 'O campo Empresa deve ser um número.',
+            'codigo.numeric'        => 'O campo Código deve ser um número.',
+            'empresa.numeric'       => 'O campo Empresa deve ser um número.',
             'empresa.required'      => 'O campo Empresa é obrigatório.',
             'sigla.required'        => 'O campo Sigla é obrigatório.',
             'razao_social.required' => 'O campo Razão Social é obrigatório.',
