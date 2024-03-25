@@ -35,10 +35,10 @@ class ClientController extends Controller
 
     /**
      * Update the specified resource in storage.
-     */
+     */ 
     public function update(UpdateClientRequest $request, Client $client)
     {
-        return $client->update($request->all());
+        return $client->update($request->validated());
     }
 
     /**
