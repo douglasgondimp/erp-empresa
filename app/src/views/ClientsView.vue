@@ -14,12 +14,13 @@ import CompanyService from '@/services/company';
 const clientService  = new ClientService();
 const companyService = new CompanyService();
 
-const clients          = ref([]);
-const companies        = ref([]);
-const paginator        = ref([]);
-const headerDialog     = ref([]);
-const visible          = ref(false);
-const create           = ref(false);
+const clients      = ref([]);
+const companies    = ref([]);
+const paginator    = ref([]);
+const headerDialog = ref([]);
+const visible      = ref(false);
+const create       = ref(false);
+const currentPage  = ref(0);
 
 
 const client = reactive({
@@ -37,39 +38,29 @@ onMounted(async () => {
 async function init()
 {
     try {
-        const responseClient  = await clientService.getClients();
-        const responseCompany = await companyService.getCompanies()
+        currentPage.value = currentPage.value ?? 1;
 
-        if (responseClient.status === 200) {
-            clients.value = responseClient.data
+        const responseClient  = await clientService.getClients(currentPage.value);
+        const responseCompany = await companyService.getCompanies(0)
 
-            for (var i = 1; i <= clients.value.last_page; i++) {
-                paginator.value.push(clients.value.per_page * i);
-            }
-        } else {
-            console.error(response)
+        clients.value = responseClient.data
+        companies.value = responseCompany
+
+        for (var i = 1; i <= clients.value.last_page; i++) {
+            paginator.value.push(clients.value.per_page * i);
         }
-
-        if (responseCompany.status === 200) {
-            companies.value = responseCompany.data
-        }
-
     } catch (error) {
         console.error(error)
     }
 }
 
 async function onPageEvent(event) {
-    const page = event.page + 1;
-
+    currentPage.value = event.page + 1;
+    
     try {
-        const response = await clientService.getClients(page)
+        const response = await clientService.getClients(currentPage.value)
 
-        if (response.status === 200) {
-            clients.value = response.data
-        } else {
-            console.error(response)
-        }
+        clients.value = response.data
 
     } catch (error) {
         console.error('error', error)
@@ -166,7 +157,8 @@ async function confirmExclusion(codigo) {
                             <label for="empresa">Empresa</label>
                             <Dropdown class="w-full shadow rounded" id="empresa" v-model="client.empresa"
                                 :options="companies.data" optionLabel="razao_social" optionValue="codigo"
-                                placeholder="Empresa" />
+                                :modelValue="client.empresa" placeholder="Empresa" 
+                            />
                         </InputGroup>
 
                         <InputGroup class="flex flex-col mt-3">
