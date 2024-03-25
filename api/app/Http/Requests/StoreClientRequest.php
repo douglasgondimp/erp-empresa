@@ -6,7 +6,7 @@ use App\Enum\PersonStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ClientRequest extends FormRequest
+class StoreClientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class ClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'empresa'      => 'required|decimal:4,0',
-            'codigo'       => 'required|decimal:4,0|unque:App\Models\Client,codigo',
+            'empresa'      => 'required|numeric|max:9999',
+            'codigo'       => 'required|numeric|max:9999|unique:App\Models\Client,codigo',
             'razao_social' => 'required|string|max:255',
             'tipo'         => ['required', Rule::enum(PersonStatus::class)],
             'cpf_cnpj'     => 'required|cpf_cnpj'
@@ -36,9 +36,9 @@ class ClientRequest extends FormRequest
     {
         return [
             'empresa.required'      => 'O campo Empresa é obrigatório',
-            'empresa.decimal'       => 'O campo Empresa deve ser um número decimal',
+            'empresa.numeric'       => 'O campo Empresa deve ser um número decimal',
             'codigo.required'       => 'O campo Código é obrigatório',
-            'codigo.decimal'        => 'O campo Código deve ser um número decimal',
+            'codigo.numeric'        => 'O campo Código deve ser um número decimal',
             'codigo.unique'         => 'O código informado já existe',
             'razao_social.required' => 'O campo Razão Social é obrigatório',
             'tipo.required'         => 'O campo Tipo é obrigatório',
