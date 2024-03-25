@@ -39,4 +39,8 @@ Inicializando o app:
 1) Instalar os pacotes npm: `npm install`
 2) Executar a aplicação na porta 3000: `npm run dev -- --port 3000`
 
+Para testar a aplicação, a primeira página é a de login onde foi criado um acesso de usuário ao executar a migrate com os seeder.
+Use este acesso para realizar o login na aplciação:
 
+Usuário: admin.test@example.com
+Senha: password
