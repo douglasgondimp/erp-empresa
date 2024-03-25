@@ -15,6 +15,8 @@ class Client extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'codigo';
+
     protected $fillable = [
         'empresa', // decimal(4,0)
         'codigo', // decimal(4,0)
