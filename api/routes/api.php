@@ -11,6 +11,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/check', [AuthController::class, 'checkAuth']);
 
-    Route::apiResource('companies', CompanyController::class);
-    Route::apiResource('clients', ClientController::class);
+    Route::apiResource('companies', CompanyController::class)->scoped([
+        'company' => 'codigo'
+    ]);
+    Route::apiResource('clients', ClientController::class)->scoped([
+        'client' => 'codigo'
+    ]);
 });
