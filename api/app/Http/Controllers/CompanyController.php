@@ -5,15 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Company::paginate(15);
+        $pagination = $request->get('pagination');
+
+        if ($pagination == 1) {
+            return Company::paginate(15);
+        }
+
+        return Company::all();
     }
 
     /**
