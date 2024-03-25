@@ -8,20 +8,20 @@ import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import { onMounted, ref, reactive } from 'vue';
-import http from '@/services/http.js';
-import { useStore } from 'vuex';
 import ClientService from '@/services/client';
 import CompanyService from '@/services/company';
 
-const clientService = new ClientService();
+const clientService  = new ClientService();
 const companyService = new CompanyService();
-const store = useStore();
-const clients = ref([]);
-const companies = ref([]);
-const paginator = ref([]);
-const headerDialog = ref([]);
-const visible = ref(false);
-const create = ref(false);
+
+const clients          = ref([]);
+const companies        = ref([]);
+const paginator        = ref([]);
+const headerDialog     = ref([]);
+const visible          = ref(false);
+const create           = ref(false);
+
+
 const client = reactive({
     empresa: null,
     codigo: null,
@@ -37,7 +37,7 @@ onMounted(async () => {
 async function init()
 {
     try {
-        const responseClient = await clientService.getClients();
+        const responseClient  = await clientService.getClients();
         const responseCompany = await companyService.getCompanies()
 
         if (responseClient.status === 200) {
@@ -77,30 +77,30 @@ async function onPageEvent(event) {
 }
 
 function dialogNewClient() {
-    visible.value = true;
-    headerDialog.value = 'Novo Cliente';
-    create.value = true;
-    client.empresa = null;
-    client.codigo = null;
+    visible.value       = true;
+    headerDialog.value  = 'Novo Cliente';
+    create.value        = true;
+    client.empresa      = null;
+    client.codigo       = null;
     client.razao_social = '';
-    client.tipo = '';
-    client.cpf_cnpj = '';
+    client.tipo         = '';
+    client.cpf_cnpj     = '';
 }
 
 async function dialogEditClient(codigo) {
-    visible.value = true;
+    visible.value      = true;
     headerDialog.value = 'Editar Cliente';
-    create.value = false;
+    create.value       = false;
 
     try {
         const responseClient = await clientService.getClient(codigo);
 
         if (responseClient.status === 200) {
-            client.empresa = responseClient.data.empresa;
-            client.codigo = responseClient.data.codigo;
+            client.empresa      = responseClient.data.empresa;
+            client.codigo       = responseClient.data.codigo;
             client.razao_social = responseClient.data.razao_social;
-            client.tipo = responseClient.data.tipo;
-            client.cpf_cnpj = responseClient.data.cpf_cnpj.replace(/[^0-9]/g, '');
+            client.tipo         = responseClient.data.tipo;
+            client.cpf_cnpj     = responseClient.data.cpf_cnpj.replace(/[^0-9]/g, '');
         } else {
             console.error(responseClient);
         }
@@ -121,18 +121,32 @@ async function sendClient() {
         }
 
         console.log('Cliente criado com sucesso!');
-        visible.value = false;
-        client.empresa = null;
-        client.codigo = null;
+        visible.value       = false;
+        client.empresa      = null;
+        client.codigo       = null;
         client.razao_social = '';
-        client.tipo = '';
-        client.cpf_cnpj = '';
+        client.tipo         = '';
+        client.cpf_cnpj     = '';
         init();
        
     } catch (error) {
         console.error(error);
-        console.error(error.message);
-        console.error(error.response.data.errors);
+    }
+}
+
+async function confirmExclusion(codigo) {
+    const confirmation = confirm("Deseja excluir este cliente?");
+    
+    if (confirmation) {
+        try {
+            const response = await clientService.deleteClient(codigo);
+
+            console.log(response);
+
+            init();
+        } catch(error) {
+            console.error(error);
+        }
     }
 }
 </script>
@@ -195,7 +209,8 @@ async function sendClient() {
                     <template #body="slotProps">
                         <Button class="bg-green-500 py-1" icon="pi pi-pencil" title="Editar"
                             @click="dialogEditClient(slotProps.data.codigo)"></Button>
-                        <Button class="bg-red-500 py-1 ml-2" icon="pi pi-times" title="Excluir"></Button>
+                        <Button class="bg-red-500 py-1 ml-2" icon="pi pi-times" title="Excluir"
+                            @click="confirmExclusion(slotProps.data.codigo)"></Button>
                     </template>
                 </Column>
             </DataTable>
