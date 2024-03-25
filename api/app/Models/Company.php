@@ -12,6 +12,8 @@ class Company extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $primaryKey = 'codigo';
+
     protected $fillable = [
         'codigo', // decimal(4,0) 
         'empresa', // decimal(4, 0)
