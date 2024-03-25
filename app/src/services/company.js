@@ -1,16 +1,14 @@
 import http from './http';
 import { useStore } from 'vuex';
 
-export default class CompanyService
-{
-    constructor()
-    {
+export default class CompanyService {
+    constructor() {
         this.store = useStore();
     }
 
-    async getCompanies(page = 1) 
-    {
-        const response = await http.get(`/companies?page=${page}`, {
+    async getCompanies(pagination = 1, page = 1) {
+
+        const response = await http.get(`/companies?pagination=${pagination}&page=${page}`, {
             headers: {
                 'Authorization': `Bearer ${this.store.state.token}`
             }
@@ -19,47 +17,43 @@ export default class CompanyService
         return response;
     }
 
-    async createCompany(company)
-    {
+    async createCompany(company) {
         const response = await http.post('/companies', company, {
             headers: {
                 'Authorization': `Bearer ${this.store.state.token}`
             }
         });
 
-        return response.data;
+        return response;
     }
 
-    async getCompany(id)
-    {
+    async getCompany(id) {
         const response = await http.get(`/companies/${id}`, {
             headers: {
                 'Authorization': `Bearer ${this.store.state.token}`
             }
         });
 
-        return response.data;
+        return response;
     }
 
-    async updateCompany(id, company)
-    {
+    async updateCompany(id, company) {
         const response = await http.put(`/companies/${id}`, company, {
             headers: {
                 'Authorization': `Bearer ${this.store.state.token}`
             }
         });
 
-        return response.data;
+        return response;
     }
 
-    async deleteComapany(id)
-    {
+    async deleteComapany(id) {
         const response = await http.delete(`/companies/${id}`, {
             headers: {
                 'Authorization': `Bearer ${this.store.state.token}`
             }
         });
 
-        return response.data;
+        return response;
     }
 }
